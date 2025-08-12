@@ -3,8 +3,8 @@
 import pytest
 from pathlib import Path
 from click.testing import CliRunner
-from src.main import main
-
+from pcap2har.main import main
+ 
 
 class TestMain:
     """Test cases for main CLI."""
