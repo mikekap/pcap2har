@@ -458,6 +458,13 @@ dev = [
     { name = "pytest", version = "8.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest", version = "8.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
+    { name = "pytest", version = "8.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+    { name = "pytest-goldie" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0" },
@@ -469,6 +476,12 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-goldie", specifier = ">=0.1.5" },
+]
 
 [[package]]
 name = "platformdirs"
@@ -635,6 +648,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/08/ba/45911d754e8eba3d5a841a5ce61a65a685ff1798421ac054f85aa8747dfb/pytest-8.4.1.tar.gz", hash = "sha256:7c67fd69174877359ed9371ec3af8a3d2b04741818c51e5e99cc1742251fa93c", size = 1517714, upload-time = "2025-06-18T05:48:06.109Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/29/16/c8a903f4c4dffe7a12843191437d7cd8e32751d5de349d45d3fe69544e87/pytest-8.4.1-py3-none-any.whl", hash = "sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7", size = 365474, upload-time = "2025-06-18T05:48:03.955Z" },
+]
+
+[[package]]
+name = "pytest-goldie"
+version = "0.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest", version = "8.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
+    { name = "pytest", version = "8.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5c/95/9ca5ddc92cf71c18a6e05fc877f67ec79bc8461f13b2dfaab44a37985dca/pytest-goldie-0.1.5.tar.gz", hash = "sha256:8aa3dc1dc282d66b5f4a09fd04ad0227e8b292f73585cc8393a58c9e8b602dc3", size = 4651, upload-time = "2023-05-23T10:44:01.683Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0f/5d/ab49825a8dcca065edcc04e078a6caf6786a5b6fd4126023c37d4f836c9e/pytest_goldie-0.1.5-py3-none-any.whl", hash = "sha256:a7fc8c202733f2d0df1efbc6a7e7fc02645b009cd8354cbe4d97e3f8f7bb82b3", size = 4227, upload-time = "2023-05-23T10:43:59.876Z" },
 ]
 
 [[package]]

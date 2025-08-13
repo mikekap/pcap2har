@@ -219,7 +219,7 @@ def read_pcap_file(pcap_file):
 
             headers = my_conv_details.headers
             for header in header.all_fields:
-                name, value = header.showname_value.rsplit(': ', 1)
+                name, value = header.showname_value.split(': ', 1)
                 headers[CaseInsensitiveString(name.strip())].append(value.strip())
 
             my_conv_details.headersSize += int(layer.get_field('header_length') or layer.get_field('headers_decoded_length'))

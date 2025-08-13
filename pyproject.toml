@@ -35,3 +35,9 @@ target-version = ['py38']
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"] 
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-goldie>=0.1.5",
+]
