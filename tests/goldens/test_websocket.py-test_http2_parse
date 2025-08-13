@@ -1,0 +1,154 @@
+{
+  "log": {
+    "creator": {
+      "comment": null,
+      "name": "pcap2har",
+      "version": "0.1"
+    },
+    "entries": [
+      {
+        "_resourceType": "websocket",
+        "_webSocketMessages": [
+          {
+            "data": "Welcome, 192.168.43.1 !",
+            "opcode": 1,
+            "time": 1475155931.028697,
+            "type": "receive"
+          },
+          {
+            "data": "test message",
+            "opcode": 1,
+            "time": 1475155946.89231,
+            "type": "send"
+          },
+          {
+            "data": "21:33:52 ('192.168.43.1', 50999) say: test message",
+            "opcode": 1,
+            "time": 1475155946.903705,
+            "type": "receive"
+          },
+          {
+            "data": "hello websocket",
+            "opcode": 1,
+            "time": 1475156008.638608,
+            "type": "send"
+          },
+          {
+            "data": "21:34:53 ('192.168.43.1', 50999) say: hello websocket",
+            "opcode": 1,
+            "time": 1475156008.65769,
+            "type": "receive"
+          }
+        ],
+        "cache": {},
+        "connection": "1-0",
+        "request": {
+          "bodySize": 0,
+          "headers": [
+            {
+              "name": "Host",
+              "value": "192.168.43.135:12345"
+            },
+            {
+              "name": "Connection",
+              "value": "Upgrade"
+            },
+            {
+              "name": "Pragma",
+              "value": "no-cache"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "Upgrade",
+              "value": "websocket"
+            },
+            {
+              "name": "Origin",
+              "value": "file://"
+            },
+            {
+              "name": "Sec-WebSocket-Version",
+              "value": "13"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, sdch"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4"
+            },
+            {
+              "name": "Sec-WebSocket-Key",
+              "value": "bKdPyn3u98cTfZJSh4TNeQ=="
+            },
+            {
+              "name": "Sec-WebSocket-Extensions",
+              "value": "permessage-deflate; client_max_window_bits"
+            }
+          ],
+          "headersSize": 863,
+          "httpVersion": "HTTP/1.1",
+          "method": "GET",
+          "postData": null,
+          "url": "http://192.168.43.135:12345/"
+        },
+        "response": {
+          "bodySize": 0,
+          "content": {
+            "compression": 0,
+            "mimeType": "",
+            "size": 0,
+            "text": ""
+          },
+          "headers": [
+            {
+              "name": "Upgrade",
+              "value": "websocket"
+            },
+            {
+              "name": "Connection",
+              "value": "Upgrade"
+            },
+            {
+              "name": "Sec-WebSocket-Accept",
+              "value": "4EaeSCkuOGBy+rjOSJSMV+VMoC0="
+            },
+            {
+              "name": "WebSocket-Origin",
+              "value": "file://"
+            },
+            {
+              "name": "WebSocket-Location",
+              "value": "ws://192.168.43.135:12345/"
+            }
+          ],
+          "headersSize": 328,
+          "httpVersion": "HTTP/1.1",
+          "status": 101,
+          "statusText": "Switching Protocols"
+        },
+        "serverIPAddress": "192.168.43.135",
+        "startedDateTime": "2016-09-29T13:32:10.799930Z",
+        "time": 77857.75995254517,
+        "timings": {
+          "blocked": 0,
+          "connect": 0,
+          "dns": 0,
+          "receive": -1,
+          "send": 0.0,
+          "ssl": 0,
+          "wait": -1
+        }
+      }
+    ],
+    "version": "1.2"
+  }
+}
