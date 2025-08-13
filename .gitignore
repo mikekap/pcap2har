@@ -166,3 +166,4 @@ cython_debug/
 /*.har
 /*.pcap
 /*.pcapng
+.DS_Store
