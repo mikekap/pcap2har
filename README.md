@@ -61,13 +61,13 @@ To run the same checks locally:
 uv sync --extra dev
 
 # Run tests
-uv run python -m pytest tests/ -v
+uv run pytest
 
 # Run specific test
-uv run python -m pytest tests/test_http2.py -v
+uv run pytest tests/test_http2.py -v
 
 # Check formatting
-uv run black --check pcap2har/ tests/
+uv run black .
 
 # Run linting
 uv run flake8 pcap2har/ tests/

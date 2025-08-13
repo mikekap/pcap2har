@@ -39,6 +39,7 @@ python_files = ["test_*.py"]
 [dependency-groups]
 dev = [
     "black>=24.8.0",
+    "flake8>=7.3.0",
     "pytest>=8.3.5",
     "pytest-goldie>=0.1.5",
 ]
