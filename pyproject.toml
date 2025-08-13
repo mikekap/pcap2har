@@ -6,7 +6,7 @@ authors = [
     {name = "Mike Kaplinskiy", email = "mike.kaplinskiy@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.8.1"
+requires-python = ">=3.10.0"
 dependencies = [
     "pyshark>=0.6.0",
     "click>=8.1.0",
@@ -30,7 +30,7 @@ packages = ["src"]
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py310']
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -38,6 +38,7 @@ python_files = ["test_*.py"]
 
 [dependency-groups]
 dev = [
+    "black>=24.8.0",
     "pytest>=8.3.5",
     "pytest-goldie>=0.1.5",
 ]

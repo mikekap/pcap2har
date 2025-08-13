@@ -4,6 +4,7 @@ import pytest
 from pathlib import Path
 from pcap2har.main import *
 
+
 def parse_pcap_to_har(file):
     return to_har_json(read_pcap_file(file))
 

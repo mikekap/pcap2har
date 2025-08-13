@@ -1,1 +1,1 @@
-"""Tests for pcap2har package.""" 
+"""Tests for pcap2har package."""
