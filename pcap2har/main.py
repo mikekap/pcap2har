@@ -131,17 +131,21 @@ def read_pcap_file(pcap_file):
             if not stream_id:
                 continue
             full_stream_id = ("3", packet.quic.connection_number, stream_id)
+            port = packet.udp.dstport
             http_version = "HTTP/3"
         elif layer.layer_name == "http2":
             if layer.get_field("streamid") == "0" or layer.stream == "Stream: Magic":
                 continue
             full_stream_id = ("2", packet.tcp.stream, layer.streamid)
+            port = packet.tcp.dstport
             http_version = "HTTP/2"
         elif layer.layer_name == "http":
             full_stream_id = ("1", packet.tcp.stream)
+            port = packet.tcp.dstport
             http_version = "HTTP/1"
         elif layer.layer_name == "websocket":
             full_stream_id = ("1", packet.tcp.stream)
+            port = packet.tcp.dstport
         else:
             continue
 
@@ -154,7 +158,7 @@ def read_pcap_file(pcap_file):
                 if conv_details[full_stream_id].remoteAddress:
                     direction = (
                         "send"
-                        if str(packet.ip.dst)
+                        if f'{packet.ip.dst}:{port}'
                         == conv_details[full_stream_id].remoteAddress
                         else "recv"
                     )
@@ -172,7 +176,7 @@ def read_pcap_file(pcap_file):
         if packet not in conv_details[full_stream_id].packets:
             conv_details[full_stream_id].packets.append(packet)
         if direction == "send":
-            conv_details[full_stream_id].remoteAddress = str(packet.ip.dst)
+            conv_details[full_stream_id].remoteAddress = f'{packet.ip.dst}:{port}'
 
         if layer.layer_name == "websocket":
             message = WebsocketMessage()
@@ -309,7 +313,7 @@ def to_har_json(conv_details, comment=None):
                 {
                     "startedDateTime": unix_ts_to8601(conv.request.startTimestamp),
                     "time": (conv.maxPacketTs - conv.request.startTimestamp) * 1000.0,
-                    "serverIPAddress": conv.remoteAddress,
+                    "serverIPAddress": conv.remoteAddress.rsplit(':', 1)[0],
                     "request": {
                         "method": conv.request.method,
                         "url": conv.request.url,
