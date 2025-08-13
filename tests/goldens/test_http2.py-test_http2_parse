@@ -110,7 +110,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/scriptaculous.js"
         },
         "response": {
-          "bodySize": 2936,
+          "bodySize": 1514,
           "content": {
             "compression": 1422,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -325,7 +325,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js"
         },
         "response": {
-          "bodySize": 139854,
+          "bodySize": 31577,
           "content": {
             "compression": 108277,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -544,7 +544,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/builder.js"
         },
         "response": {
-          "bodySize": 4744,
+          "bodySize": 1847,
           "content": {
             "compression": 2897,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -763,7 +763,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/effects.js"
         },
         "response": {
-          "bodySize": 38471,
+          "bodySize": 8720,
           "content": {
             "compression": 29751,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -982,7 +982,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/dragdrop.js"
         },
         "response": {
-          "bodySize": 31056,
+          "bodySize": 7531,
           "content": {
             "compression": 23525,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -1201,7 +1201,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/controls.js"
         },
         "response": {
-          "bodySize": 34787,
+          "bodySize": 9033,
           "content": {
             "compression": 25754,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -1420,7 +1420,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/slider.js"
         },
         "response": {
-          "bodySize": 10162,
+          "bodySize": 2653,
           "content": {
             "compression": 7509,
             "mimeType": "text/javascript; charset=UTF-8",
@@ -1639,7 +1639,7 @@
           "url": "https://ajax.googleapis.com/ajax/libs/scriptaculous/1.8.3/sound.js"
         },
         "response": {
-          "bodySize": 2456,
+          "bodySize": 982,
           "content": {
             "compression": 1474,
             "mimeType": "text/javascript; charset=UTF-8",

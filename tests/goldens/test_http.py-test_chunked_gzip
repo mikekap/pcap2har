@@ -42,7 +42,7 @@
           "url": "http://www.wireshark.org:8080/"
         },
         "response": {
-          "bodySize": 97845,
+          "bodySize": 26375,
           "content": {
             "compression": 71470,
             "mimeType": "text/html",

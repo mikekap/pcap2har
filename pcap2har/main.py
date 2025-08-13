@@ -349,7 +349,7 @@ def to_har_json(conv_details, comment=None):
                             for v in vs
                         ],
                         "headersSize": conv.response.headersSize,
-                        "bodySize": len(conv.response.body),
+                        "bodySize": len(conv.response.body) - conv.response.compressionSaved,
                         "content": {
                             "size": len(conv.response.body),
                             "compression": conv.response.compressionSaved,
