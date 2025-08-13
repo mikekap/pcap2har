@@ -120,8 +120,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-oXFn-Stlqa-kAI0q7zBoPw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-oXFn-Stlqa-kAI0q7zBoPw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -340,8 +340,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-gQVBH50LfLEF1_KU4nU6FA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-gQVBH50LfLEF1_KU4nU6FA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -560,8 +560,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-UDSYbsS4KI9uysAeKJlcDg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-UDSYbsS4KI9uysAeKJlcDg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -984,8 +984,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-fVsJlwbbaKZomBwkT7lB2w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-fVsJlwbbaKZomBwkT7lB2w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -1283,8 +1283,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-Z2TAgsbiqGGFoQE2G4wVzA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-Z2TAgsbiqGGFoQE2G4wVzA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -2543,8 +2543,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-Tl-5Mtxbi2PmTJnoxtjJ-w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-Tl-5Mtxbi2PmTJnoxtjJ-w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -3273,8 +3273,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-Hbx1GWc6CMHrJuVnfmB5wQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-Hbx1GWc6CMHrJuVnfmB5wQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -3524,8 +3524,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-e0GfhQK6J7wNFQtnxJqGRw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-e0GfhQK6J7wNFQtnxJqGRw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -3823,8 +3823,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-qs7jk4gGg_afFSvmGqbeTQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-qs7jk4gGg_afFSvmGqbeTQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -4858,8 +4858,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-VukIIhmFsxMR7ZBXvdk8aQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-VukIIhmFsxMR7ZBXvdk8aQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -5585,8 +5585,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-PPF8Aqczd2aaSOrZk4Cb5Q' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-PPF8Aqczd2aaSOrZk4Cb5Q' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -5856,8 +5856,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-yetz8_ojcXKFx_7yu6YnrA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-yetz8_ojcXKFx_7yu6YnrA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -6028,8 +6028,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-ZSRs_rP3wGuEhrvFj5bVAA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-ZSRs_rP3wGuEhrvFj5bVAA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -6606,8 +6606,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-ELJQhodHZQ424sN6yTQPrQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-ELJQhodHZQ424sN6yTQPrQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -6841,8 +6841,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-HBBiOXLiwUT-GLfMRQbYhA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-HBBiOXLiwUT-GLfMRQbYhA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -7076,8 +7076,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-hjL_rZ3ULtLb2GAA8zSnxA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-hjL_rZ3ULtLb2GAA8zSnxA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -7311,8 +7311,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-BXHkvBjw1HwW2ubVjLzclw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-BXHkvBjw1HwW2ubVjLzclw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -7546,8 +7546,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-YN_KmPsHmk5lHpigNt7oeQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-YN_KmPsHmk5lHpigNt7oeQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -7777,8 +7777,8 @@
               "value": "max-age=31536000"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-vxoHtWt68mywGQkK5x3e2A' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-vxoHtWt68mywGQkK5x3e2A' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/cdt1"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -8020,8 +8020,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-FJP0YTkGheSnomlGY8v1Hw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-FJP0YTkGheSnomlGY8v1Hw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -8255,8 +8255,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-K5NJv-2m8uzbIVqnJcs7tg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-K5NJv-2m8uzbIVqnJcs7tg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -8490,8 +8490,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-tr9U3aT8Yfymw6PTrdru8w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-tr9U3aT8Yfymw6PTrdru8w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -8725,8 +8725,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-IbIPPLpq1bvJZuGMGIKfDw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-IbIPPLpq1bvJZuGMGIKfDw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -8960,8 +8960,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-I-IrePp6HoVGSgTqZucmMQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-I-IrePp6HoVGSgTqZucmMQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -9195,8 +9195,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-0GGmURyc3uT-LCxEKSX3Mw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-0GGmURyc3uT-LCxEKSX3Mw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -9430,8 +9430,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-jHkLnuRM_PtQui3-OVsTKg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-jHkLnuRM_PtQui3-OVsTKg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -9665,8 +9665,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-Qt1mghGQuRQfBHgWnr-4Lg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-Qt1mghGQuRQfBHgWnr-4Lg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -10920,8 +10920,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-X4sZLfeX-4E7mJPFpNg-lA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-X4sZLfeX-4E7mJPFpNg-lA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -11155,8 +11155,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-UTDiu-8JR_s3gRLuSmocuA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-UTDiu-8JR_s3gRLuSmocuA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -11390,8 +11390,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-9M_FJZk_z2zDraPrpyGC3w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-9M_FJZk_z2zDraPrpyGC3w' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
@@ -11625,8 +11625,8 @@
               "value": "text/html; charset=UTF-8"
             },
             {
-              "name": "content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-fgL8J3MVU39EyCqqdvum3A' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https",
-              "value": "http:;report-uri https://csp.withgoogle.com/csp/gws/other"
+              "name": "content-security-policy",
+              "value": "object-src 'none';base-uri 'self';script-src 'nonce-fgL8J3MVU39EyCqqdvum3A' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other"
             },
             {
               "name": "cross-origin-opener-policy",
