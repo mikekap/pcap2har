@@ -1,11 +1,42 @@
-#!/bin/bash
-set -mexo pipefail
+#!/usr/bin/env bash
+set -mEeo pipefail
 
-sudo /bin/bash -c 'echo hi';
-sudo tcpdump -w capture.pcap -s 0 -i any tcp port 80 or tcp port 443 or udp port 443 &
-SSLKEYLOGFILE=/tmp/sslkeylog.log /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --user-data-dir=/tmp/prof --no-first-run "$@"
-kill -s SIGINT %1
-fg
-rm capture.pcapng
-editcap --inject-secrets tls,/tmp/sslkeylog.log capture.pcap capture.pcapng
-rm -f /tmp/sslkeylog.log capture.pcap
+KEYLOG="$(mktemp /tmp/sslkeys.XXXXXX)"
+PROFILE="$(mktemp -d /tmp/chrome-prof.XXXXXX)"
+PCAP="$(mktemp /tmp/capture.XXXXXX)"
+OUT="$PWD/capture.pcapng"
+
+cleanup() {
+  # best-effort cleanup
+  sudo rm -f "$PCAP" 2>/dev/null || true
+  rm -f "$KEYLOG" 2>/dev/null || true
+  rm -rf "$PROFILE" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+# Start tcpdump as root; grab the *tcpdump* child PID
+sudo tcpdump -U -s 0 -i any -w "$PCAP" -Z "$USER" \
+  '(tcp port 80 or tcp port 443 or udp port 443)' &
+sleep 1
+SUDO_PID=$!
+# Find the actual tcpdump PID (child of sudo)
+TCPDUMP_PID="$(pgrep -P "$SUDO_PID" tcpdump || true)"
+echo "tcpdump running with pid $TCPDUMP_PID"
+
+# Launch Chrome with TLS key log
+SSLKEYLOGFILE="$KEYLOG" \
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+  --user-data-dir="$PROFILE" --no-first-run "$@"
+
+# Stop tcpdump cleanly and wait for it to flush/close the file
+if [[ -n "$TCPDUMP_PID" ]]; then
+  sudo kill -INT "$TCPDUMP_PID" || true
+else
+  sudo kill -INT "$SUDO_PID" || true
+fi
+wait "$SUDO_PID" || true
+
+# Convert + inject TLS secrets into pcapng
+editcap --inject-secrets "tls,$KEYLOG" "$PCAP" "$OUT"
+
+echo "Decrypted capture written to: $OUT"

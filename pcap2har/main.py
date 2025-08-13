@@ -7,6 +7,8 @@ import gzip
 import json
 import sys
 from typing import Optional
+
+from pyshark.capture.capture import Packet
 import click
 import base64
 from pathlib import Path
@@ -72,6 +74,8 @@ class HttpSession:
     response: HttpResponse = field(default_factory=lambda: HttpResponse())
     websocketMessages: list[WebsocketMessage] = field(default_factory=list)
     maxPacketTs: int = 0
+
+    packets: list[Packet] = field(default_factory=list)
 
 
 @click.command()
@@ -148,6 +152,8 @@ def read_pcap_file(pcap_file):
         my_conv_details = conv_details[full_stream_id].request if direction == 'send' else conv_details[full_stream_id].response
         has_something = False
 
+        if packet not in conv_details[full_stream_id].packets:
+            conv_details[full_stream_id].packets.append(packet)
         if direction == 'send':
             conv_details[full_stream_id].remoteAddress = str(packet.ip.dst)
         
@@ -226,8 +232,18 @@ def read_pcap_file(pcap_file):
                 code, value = status[0].split(' ', 1)
                 my_conv_details.status = int(code)
                 my_conv_details.statusText = value
-        
-        if data := layer.get_field('data_data') or layer.get_field('data'):
+
+        match layer.layer_name:
+            case 'http':
+                data = layer.get('chunk_data') or layer.get_field('file_data')
+            case 'http2':
+                data = layer.get_field('body_reassembled_data')
+                if not data and layer.flags.hex_value & 0x01:
+                    data = layer.get_field('data_data')
+            case 'http3':
+                data = layer.get_field('data_data') or layer.get_field('data')
+
+        if data:
             has_something = True
             for d in data.all_fields:
                 if d.showname_value == '<MISSING>' and layer.length == '0':
