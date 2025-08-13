@@ -108,6 +108,7 @@ def read_pcap_file(pcap_file):
         pcap_file,
         display_filter='http || http2 || http3 || websocket',
         keep_packets=False,
+        override_prefs={'http.decompress_body': 'FALSE', 'http2.decompress_body': 'FALSE'},
         tshark_path='/Users/mikekap/Projects/wireshark/build/run/Wireshark.app/Contents/MacOS/tshark')
 
     conv_details = defaultdict(HttpSession)
@@ -354,7 +355,7 @@ def to_har_json(conv_details, comment=None):
 def content_to_json(content_type, body):
     if not body:
         return {'mimeType': '', 'text': ''}
-    if content_type.split(';', 1)[0].strip() in ('application/x-www-form-urlencoded', 'application/json', 'text/html', 'application/json+protobuf'):
+    if content_type.split(';', 1)[0].strip() in ('application/x-www-form-urlencoded', 'application/json', 'text/html', 'text/plain', 'text/javascript', 'application/json+protobuf'):
         return {'mimeType': content_type, 'text': body.decode('utf-8')}
     else:
         return {'mimeType': content_type, 'text': base64.b64encode(body).decode('ascii'), 'encoding': 'base64'}
