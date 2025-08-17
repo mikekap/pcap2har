@@ -45,6 +45,34 @@ class HttpRequest:
     headersSize: int = 0
     body: bytes = b""
 
+    def to_har_request(self):
+        """Convert this HTTP request to HAR format."""
+        return {
+            "method": self.method,
+            "url": self.url,
+            "httpVersion": self.httpVersion,
+            "headers": [
+                {"name": h, "value": v}
+                for h, vs in self.headers.items()
+                for v in vs
+            ],
+            "postData": (
+                {
+                    "mimeType": first(
+                        self.headers.get("content-type", [])
+                    ),
+                    "encoding": "base64",
+                    "text": base64.b64encode(self.body).decode(
+                        "ascii"
+                    ),
+                }
+                if self.body
+                else None
+            ),
+            "headersSize": self.headersSize,
+            "bodySize": len(self.body),
+        }
+
 
 @dataclass(slots=True, frozen=False)
 class HttpResponse:
@@ -60,6 +88,29 @@ class HttpResponse:
     body: bytes = b""
     compressionSaved: int = 0
 
+    def to_har_response(self):
+        """Convert this HTTP response to HAR format."""
+        return {
+            "status": self.status,
+            "statusText": self.statusText,
+            "httpVersion": self.httpVersion,
+            "headers": [
+                {"name": h, "value": v}
+                for h, vs in self.headers.items()
+                for v in vs
+            ],
+            "headersSize": self.headersSize,
+            "bodySize": len(self.body) - self.compressionSaved,
+            "content": {
+                "size": len(self.body),
+                "compression": self.compressionSaved,
+                **content_to_json(
+                    first(self.headers.get("content-type", [])),
+                    self.body,
+                ),
+            },
+        }
+
 
 @dataclass(slots=True)
 class WebsocketMessage:
@@ -68,6 +119,19 @@ class WebsocketMessage:
     opcode: int = 0
     data: bytes = b""
     data_text: str = ""
+
+    def to_har_message(self):
+        """Convert this websocket message to HAR format."""
+        return {
+            "type": self.type,
+            "time": self.time,
+            "opcode": self.opcode,
+            "data": (
+                self.data.decode("utf-8")
+                if self.opcode != 0x2
+                else base64.b64encode(self.data).decode("ascii")
+            ),
+        }
 
 
 @dataclass(slots=True)
@@ -79,6 +143,50 @@ class HttpSession:
     maxPacketTs: int = 0
 
     packets: list[Packet] = field(default_factory=list)
+
+    def to_har_entry(self, cid):
+        """Convert this HTTP session to a HAR entry."""
+        return {
+            "startedDateTime": unix_ts_to8601(self.request.startTimestamp),
+            "time": (self.maxPacketTs - self.request.startTimestamp) * 1000.0,
+            "serverIPAddress": self.remoteAddress.rsplit(':', 1)[0],
+            "request": self.request.to_har_request(),
+            "response": self.response.to_har_response(),
+            "_resourceType": "websocket" if self.websocketMessages else None,
+            "_webSocketMessages": (
+                [m.to_har_message() for m in self.websocketMessages]
+                if self.websocketMessages
+                else None
+            ),
+            "cache": {},
+            "timings": self.to_har_timings(),
+            "connection": "-".join(map(str, cid)),
+        }
+
+    def to_har_timings(self):
+        """Convert this session's timing information to HAR format."""
+        return {
+            "blocked": 0,
+            "dns": 0,
+            "connect": 0,
+            "send": (
+                self.request.endTimestamp - self.request.startTimestamp
+            )
+            * 1000.0,
+            "wait": (
+                (self.response.startTimestamp - self.request.endTimestamp)
+                * 1000.0
+                if self.response.startTimestamp
+                else -1
+            ),
+            "receive": (
+                (self.response.endTimestamp - self.response.startTimestamp)
+                * 1000.0
+                if self.response.startTimestamp
+                else -1
+            ),
+            "ssl": 0,
+        }
 
 
 @click.command()
@@ -310,98 +418,7 @@ def to_har_json(conv_details, comment=None):
                 "comment": comment,
             },
             "entries": [
-                {
-                    "startedDateTime": unix_ts_to8601(conv.request.startTimestamp),
-                    "time": (conv.maxPacketTs - conv.request.startTimestamp) * 1000.0,
-                    "serverIPAddress": conv.remoteAddress.rsplit(':', 1)[0],
-                    "request": {
-                        "method": conv.request.method,
-                        "url": conv.request.url,
-                        "httpVersion": conv.request.httpVersion,
-                        "headers": [
-                            {"name": h, "value": v}
-                            for h, vs in conv.request.headers.items()
-                            for v in vs
-                        ],
-                        "postData": (
-                            {
-                                "mimeType": first(
-                                    conv.request.headers.get("content-type", [])
-                                ),
-                                "encoding": "base64",
-                                "text": base64.b64encode(conv.request.body).decode(
-                                    "ascii"
-                                ),
-                            }
-                            if conv.request.body
-                            else None
-                        ),
-                        "headersSize": conv.request.headersSize,
-                        "bodySize": len(conv.request.body),
-                    },
-                    "response": {
-                        "status": conv.response.status,
-                        "statusText": conv.response.statusText,
-                        "httpVersion": conv.response.httpVersion,
-                        "headers": [
-                            {"name": h, "value": v}
-                            for h, vs in conv.response.headers.items()
-                            for v in vs
-                        ],
-                        "headersSize": conv.response.headersSize,
-                        "bodySize": len(conv.response.body) - conv.response.compressionSaved,
-                        "content": {
-                            "size": len(conv.response.body),
-                            "compression": conv.response.compressionSaved,
-                            **content_to_json(
-                                first(conv.response.headers.get("content-type", [])),
-                                conv.response.body,
-                            ),
-                        },
-                    },
-                    "_resourceType": "websocket" if conv.websocketMessages else None,
-                    "_webSocketMessages": (
-                        [
-                            {
-                                "type": m.type,
-                                "time": m.time,
-                                "opcode": m.opcode,
-                                "data": (
-                                    m.data.decode("utf-8")
-                                    if m.opcode != 0x2
-                                    else base64.b64encode(m.data).decode("ascii")
-                                ),
-                            }
-                            for m in conv.websocketMessages
-                        ]
-                        if conv.websocketMessages
-                        else None
-                    ),
-                    "cache": {},
-                    "timings": {
-                        "blocked": 0,
-                        "dns": 0,
-                        "connect": 0,
-                        "send": (
-                            conv.request.endTimestamp - conv.request.startTimestamp
-                        )
-                        * 1000.0,
-                        "wait": (
-                            (conv.response.startTimestamp - conv.request.endTimestamp)
-                            * 1000.0
-                            if conv.response.startTimestamp
-                            else -1
-                        ),
-                        "receive": (
-                            (conv.response.endTimestamp - conv.response.startTimestamp)
-                            * 1000.0
-                            if conv.response.startTimestamp
-                            else -1
-                        ),
-                        "ssl": 0,
-                    },
-                    "connection": "-".join(map(str, cid)),
-                }
+                conv.to_har_entry(cid)
                 for cid, conv in conv_details.items()
                 if conv.request.method != "CONNECT" and conv.maxPacketTs > 0
             ],
