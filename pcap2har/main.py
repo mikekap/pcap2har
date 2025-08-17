@@ -52,19 +52,13 @@ class HttpRequest:
             "url": self.url,
             "httpVersion": self.httpVersion,
             "headers": [
-                {"name": h, "value": v}
-                for h, vs in self.headers.items()
-                for v in vs
+                {"name": h, "value": v} for h, vs in self.headers.items() for v in vs
             ],
             "postData": (
                 {
-                    "mimeType": first(
-                        self.headers.get("content-type", [])
-                    ),
+                    "mimeType": first(self.headers.get("content-type", [])),
                     "encoding": "base64",
-                    "text": base64.b64encode(self.body).decode(
-                        "ascii"
-                    ),
+                    "text": base64.b64encode(self.body).decode("ascii"),
                 }
                 if self.body
                 else None
@@ -95,9 +89,7 @@ class HttpResponse:
             "statusText": self.statusText,
             "httpVersion": self.httpVersion,
             "headers": [
-                {"name": h, "value": v}
-                for h, vs in self.headers.items()
-                for v in vs
+                {"name": h, "value": v} for h, vs in self.headers.items() for v in vs
             ],
             "headersSize": self.headersSize,
             "bodySize": len(self.body) - self.compressionSaved,
@@ -149,7 +141,7 @@ class HttpSession:
         return {
             "startedDateTime": unix_ts_to8601(self.request.startTimestamp),
             "time": (self.maxPacketTs - self.request.startTimestamp) * 1000.0,
-            "serverIPAddress": self.remoteAddress.rsplit(':', 1)[0],
+            "serverIPAddress": self.remoteAddress.rsplit(":", 1)[0],
             "request": self.request.to_har_request(),
             "response": self.response.to_har_response(),
             "_resourceType": "websocket" if self.websocketMessages else None,
@@ -169,19 +161,14 @@ class HttpSession:
             "blocked": 0,
             "dns": 0,
             "connect": 0,
-            "send": (
-                self.request.endTimestamp - self.request.startTimestamp
-            )
-            * 1000.0,
+            "send": (self.request.endTimestamp - self.request.startTimestamp) * 1000.0,
             "wait": (
-                (self.response.startTimestamp - self.request.endTimestamp)
-                * 1000.0
+                (self.response.startTimestamp - self.request.endTimestamp) * 1000.0
                 if self.response.startTimestamp
                 else -1
             ),
             "receive": (
-                (self.response.endTimestamp - self.response.startTimestamp)
-                * 1000.0
+                (self.response.endTimestamp - self.response.startTimestamp) * 1000.0
                 if self.response.startTimestamp
                 else -1
             ),
@@ -266,7 +253,7 @@ def read_pcap_file(pcap_file):
                 if conv_details[full_stream_id].remoteAddress:
                     direction = (
                         "send"
-                        if f'{packet.ip.dst}:{port}'
+                        if f"{packet.ip.dst}:{port}"
                         == conv_details[full_stream_id].remoteAddress
                         else "recv"
                     )
@@ -284,7 +271,7 @@ def read_pcap_file(pcap_file):
         if packet not in conv_details[full_stream_id].packets:
             conv_details[full_stream_id].packets.append(packet)
         if direction == "send":
-            conv_details[full_stream_id].remoteAddress = f'{packet.ip.dst}:{port}'
+            conv_details[full_stream_id].remoteAddress = f"{packet.ip.dst}:{port}"
 
         if layer.layer_name == "websocket":
             message = WebsocketMessage()
