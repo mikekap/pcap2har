@@ -10,6 +10,14 @@ This project provides tools to analyze network packet capture files (PCAP) and c
 
 ## Installation
 
+### From PyPI (Recommended)
+
+```bash
+pip install pcap2har
+```
+
+### From Source
+
 This project uses `uv` for package management. Make sure you have `uv` installed:
 
 ```bash
@@ -24,6 +32,26 @@ uv sync
 ```
 
 ## Usage
+
+After installation, you can use the `pcap2har` command directly:
+
+```bash
+# Basic usage
+pcap2har <pcap_file>
+
+# With output file
+pcap2har <pcap_file> -o output.har
+
+# Pretty print output
+pcap2har <pcap_file> --pretty
+
+# Set log level
+pcap2har <pcap_file> --log-level DEBUG
+```
+
+### Development Usage
+
+If running from source:
 
 ```bash
 # Basic usage

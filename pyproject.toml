@@ -6,12 +6,27 @@ authors = [
     {name = "Mike Kaplinskiy", email = "mike.kaplinskiy@gmail.com"}
 ]
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.10.0"
 dependencies = [
     "pyshark>=0.6.0",
     "click>=8.1.0",
     "brotli>=1.1.0",
     "tqdm>=4.67.1",
+]
+keywords = ["pcap", "har", "http", "network", "analysis", "wireshark"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: System :: Networking",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 [project.optional-dependencies]
@@ -21,12 +36,15 @@ dev = [
     "flake8>=6.0.0",
 ]
 
+[project.scripts]
+pcap2har = "pcap2har.main:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["pcap2har"]
 
 [tool.black]
 line-length = 88

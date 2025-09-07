@@ -205,7 +205,7 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
     """Convert PCAP file to HAR format"""
 
     logging.basicConfig(
-        level=getattr(logging, log_level.upper()),
+        level=getattr(logging, (log_level or "INFO").upper()),
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
