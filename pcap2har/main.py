@@ -233,16 +233,11 @@ def run_consistency_checks(conv_details: Dict[Any, HttpSession]):
     for conv in conv_details.values():
         content_length = conv.request.headers.get("content-length")
         if content_length and int(content_length[0]) > 0 and not conv.request.body:
-            logger.warning(
-                f"{conv!s}: Missing request body"
-            )
-        
+            logger.warning(f"{conv!s}: Missing request body")
+
         content_length = conv.response.headers.get("content-length")
         if content_length and int(content_length[0]) > 0 and not conv.response.body:
-            logger.warning(
-                f"{conv!s}: Missing response body"
-            )
-        
+            logger.warning(f"{conv!s}: Missing response body")
 
 
 def read_pcap_file(pcap_file):
