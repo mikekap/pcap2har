@@ -76,7 +76,7 @@ uv run python -m pcap2har.main <pcap_file> --pretty
 
 This project uses GitHub Actions for continuous integration:
 
-- **Tests**: Runs on every PR and push to main/master across Python 3.8-3.13
+- **Tests**: Runs on every PR and push to main/master across Python 3.10-3.13
 - **Security**: Weekly security audits and dependency updates
 - **Releases**: Automatic builds when tags are pushed
 
@@ -86,7 +86,7 @@ To run the same checks locally:
 
 ```bash
 # Install dependencies
-uv sync --extra dev
+uv sync --group dev
 
 # Run tests
 uv run pytest

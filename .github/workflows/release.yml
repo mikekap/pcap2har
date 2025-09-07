@@ -9,7 +9,7 @@ jobs:
   test:
     uses: ./.github/workflows/test.yml
     with:
-      python-versions: '["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]'
+      python-versions: '["3.10", "3.11", "3.12", "3.13"]'
 
   build-and-publish:
     needs: test
@@ -29,7 +29,7 @@ jobs:
         version: latest
     
     - name: Install dependencies
-      run: uv sync --extra dev
+      run: uv sync --group dev
     
     - name: Build package
       run: uv build
