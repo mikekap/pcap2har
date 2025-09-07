@@ -26,14 +26,36 @@ jobs:
       with:
         version: latest
     
+    - name: Install Wireshark (tshark) - Nightly
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y software-properties-common
+        # Add Wireshark development PPA for latest builds
+        sudo add-apt-repository -y ppa:wireshark-dev/stable
+        # Also add the development repository for bleeding edge features
+        echo "deb http://ppa.launchpad.net/wireshark-dev/stable/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/wireshark-dev.list
+        sudo apt-get update
+        # Install the latest development version
+        sudo apt-get install -y wireshark-common tshark
+        # Set up permissions for non-root usage
+        sudo groupadd -f wireshark
+        sudo usermod -a -G wireshark $USER
+        # Configure wireshark for non-root usage
+        sudo dpkg-reconfigure -f noninteractive wireshark-common
+        echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+        sudo dpkg-reconfigure -f noninteractive wireshark-common
+    
     - name: Install dependencies
       run: uv sync --extra dev
+    
+    - name: Verify tshark installation
+      run: tshark --version
     
     - name: Run tests
       run: uv run pytest tests/ -v
     
     - name: Run linting
-      run: uv run flake8 src/ tests/
+      run: uv run flake8 pcap2har/ tests/
     
     - name: Check formatting
-      run: uv run black --check src/ tests/ 
+      run: uv run black --check pcap2har/ tests/ 
