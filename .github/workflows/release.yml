@@ -29,10 +29,15 @@ jobs:
       run: uv run pytest tests/ -v
     
     - name: Build package
-      run: uv run uv build
+      run: uv build
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: dist
-        path: dist/ 
+        path: dist/
+    
+    - name: Publish to PyPI
+      run: uv publish
+      env:
+        UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }} 
