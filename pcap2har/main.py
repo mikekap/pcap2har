@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-"""Main entry point for pcap2har."""
-
 from dataclasses import dataclass, field
 import datetime
 from functools import total_ordering
 import gzip
 import json
-import sys
-from typing import Optional
+import logging
+from typing import Any, Dict, Optional
 
 from pyshark.capture.capture import Packet
 import click
@@ -18,6 +16,9 @@ from collections import defaultdict
 import brotli
 from . import __version__
 import tqdm
+
+
+logger = logging.getLogger(__name__)
 
 
 @total_ordering
@@ -133,8 +134,20 @@ class HttpSession:
     response: HttpResponse = field(default_factory=lambda: HttpResponse())
     websocketMessages: list[WebsocketMessage] = field(default_factory=list)
     maxPacketTs: int = 0
+    firstPacketNumber: int = 0
 
     packets: list[Packet] = field(default_factory=list)
+
+    @property
+    def __str__(self):
+        s = f"HTTP(frame.number=={self.firstPacketNumber}"
+        if self.request:
+            if self.request.httpVersion:
+                s += ", v=" + self.request.httpVersion
+
+            s += f", req={self.request.method} {self.request.url}"
+        str += ")"
+        return s
 
     def to_har_entry(self, cid):
         """Convert this HTTP session to a HAR entry."""
@@ -179,11 +192,22 @@ class HttpSession:
 @click.command()
 @click.version_option(__version__)
 @click.argument("pcap_file", type=click.Path(exists=True, path_type=Path))
-@click.option("--output", "-o", type=click.Path(), help="Output HAR file path")
+@click.option(
+    "--output", "-o", type=click.Path(allow_dash=True), help="Output HAR file path"
+)
 @click.option("--pretty/--no-pretty", help="Pretty print the json")
-def main(pcap_file: Path, output: str = None, pretty=False):
-    """Convert PCAP file to HAR format."""
-    click.echo(f"Processing PCAP file: {pcap_file}", err=True)
+@click.option(
+    "--log-level",
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
+    help="Set the logging level.",
+)
+def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
+    logging.basicConfig(
+        level=getattr(logging, log_level.upper()),
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
+
+    logger.info(f"Processing PCAP file: {pcap_file}")
 
     conv_details = read_pcap_file(pcap_file)
     if output:
@@ -191,14 +215,25 @@ def main(pcap_file: Path, output: str = None, pretty=False):
     else:
         output_path = pcap_file.with_suffix(".har")
 
+    run_consistency_checks(conv_details)
+
     js = to_har_json(conv_details, comment=f"From {pcap_file}")
 
-    click.echo(f"Output will be written to: {output_path}", err=True)
-    with open(output_path, "w") as fp:
+    logger.info(f"Output will be written to: {output_path}")
+    with click.open_file(output_path, "w") as fp:
         if pretty:
             json.dump(js, fp, sort_keys=True, indent=2)
         else:
             json.dump(js, fp)
+
+
+def run_consistency_checks(conv_details: Dict[Any, HttpSession]):
+    for conv in conv_details.values():
+        conversation_id = f"{conv.request.method} {conv.request.url}"
+
+        content_length = conv.request.headers.get("content-length")
+        if content_length and content_length > 0 and not conv.request.body:
+            logger.warning(f"")
 
 
 def read_pcap_file(pcap_file):
@@ -206,11 +241,6 @@ def read_pcap_file(pcap_file):
         pcap_file,
         display_filter="http || http2 || http3 || websocket",
         keep_packets=False,
-        override_prefs={
-            "http.decompress_body": "FALSE",
-            "http2.decompress_body": "FALSE",
-        },
-        tshark_path="/Users/mikekap/Projects/wireshark/build/run/Wireshark.app/Contents/MacOS/tshark",
     )
 
     conv_details = defaultdict(HttpSession)
@@ -259,6 +289,9 @@ def read_pcap_file(pcap_file):
                     )
                 else:
                     direction = "send"
+
+        if conv_details[full_stream_id].firstPacketNumber == 0:
+            conv_details[full_stream_id].firstPacketNumber = packet.frame.number
 
         timestamp = float(str(packet.frame_info.time_epoch))
         my_conv_details = (
@@ -358,11 +391,12 @@ def read_pcap_file(pcap_file):
 
         match layer.layer_name:
             case "http":
-                data = layer.get("chunk_data") or layer.get_field("file_data")
+                data = layer.get_field("file_data")
             case "http2":
-                data = layer.get_field("body_reassembled_data")
-                if not data and layer.flags.hex_value & 0x01:
-                    data = layer.get_field("data_data")
+                data = layer.get_field("data_data")
+                if data and layer.get_field("body_reassembled_data"):
+                    my_conv_details.body = b""
+
             case "http3":
                 data = layer.get_field("data_data") or layer.get_field("data")
 
@@ -379,19 +413,26 @@ def read_pcap_file(pcap_file):
         my_conv_details.endTimestamp = timestamp
         conv_details[full_stream_id].maxPacketTs = timestamp
 
-    for conv in conv_details.values():
+    for conv_id, conv in conv_details.items():
+        if conv_id[0] in ("1", "2"):
+            continue
         encoding = conv.response.headers.get("content-encoding") or []
         size_before = len(conv.response.body)
-        match next(iter(encoding), None):
-            case None:
-                pass
-            case "br":
-                conv.response.body = brotli.decompress(conv.response.body)
-            case "gzip":
-                conv.response.body = gzip.decompress(conv.response.body)
-            case _:
-                print(f"Unknown encoding {encoding}")
-        conv.response.compressionSaved = len(conv.response.body) - size_before
+        try:
+            match next(iter(encoding), None):
+                case None:
+                    pass
+                case "br":
+                    conv.response.body = brotli.decompress(conv.response.body)
+                case "gzip":
+                    conv.response.body = gzip.decompress(conv.response.body)
+                case _:
+                    print(f"Unknown encoding {encoding}")
+            conv.response.compressionSaved = len(conv.response.body) - size_before
+        except Exception:
+            logger.exception(
+                f"{conv!s}: Failed to parse response body with content-encoding."
+            )
     return conv_details
 
 
@@ -426,7 +467,17 @@ def content_to_json(content_type, body):
         "text/javascript",
         "application/json+protobuf",
     ):
-        return {"mimeType": content_type, "text": body.decode("utf-8")}
+        try:
+            return {"mimeType": content_type, "text": body.decode("utf-8")}
+        except UnicodeDecodeError:
+            logger.warning(
+                f"Could not convert {body!r} to {content_type}", exc_info=True
+            )
+            return {
+                "mimeType": content_type,
+                "text": base64.b64encode(body).decode("ascii"),
+                "encoding": "base64",
+            }
     else:
         return {
             "mimeType": content_type,
