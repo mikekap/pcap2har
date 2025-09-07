@@ -202,6 +202,8 @@ class HttpSession:
     help="Set the logging level.",
 )
 def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
+    """Convert PCAP file to HAR format"""
+
     logging.basicConfig(
         level=getattr(logging, log_level.upper()),
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -291,7 +293,7 @@ def read_pcap_file(pcap_file):
                     direction = "send"
 
         if conv_details[full_stream_id].firstPacketNumber == 0:
-            conv_details[full_stream_id].firstPacketNumber = packet.frame.number
+            conv_details[full_stream_id].firstPacketNumber = packet.frame_info.number
 
         timestamp = float(str(packet.frame_info.time_epoch))
         my_conv_details = (
