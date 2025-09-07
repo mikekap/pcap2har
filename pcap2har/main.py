@@ -503,7 +503,7 @@ def maybe_strip_suffix(s, suf):
 
 
 def unix_ts_to8601(ts):
-    dt_object = datetime.datetime.fromtimestamp(ts, datetime.UTC)
+    dt_object = datetime.datetime.fromtimestamp(ts, datetime.timezone.utc)
     return dt_object.isoformat().replace("+00:00", "Z")
 
 
