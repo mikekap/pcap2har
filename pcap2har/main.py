@@ -209,6 +209,7 @@ class HttpSession:
 @click.option("--pretty/--no-pretty", help="Pretty print the json")
 @click.option(
     "--log-level",
+    default="INFO",
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
     help="Set the logging level.",
 )
@@ -218,7 +219,7 @@ def main(
     """Convert PCAP file to HAR format"""
 
     logging.basicConfig(
-        level=getattr(logging, (log_level or "INFO").upper()),
+        level=getattr(logging, log_level.upper()),
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
