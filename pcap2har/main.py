@@ -138,7 +138,6 @@ class HttpSession:
 
     packets: list[Packet] = field(default_factory=list)
 
-    @property
     def __str__(self):
         s = f"HTTP(frame.number=={self.firstPacketNumber}"
         if self.request:
@@ -233,10 +232,17 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
 def run_consistency_checks(conv_details: Dict[Any, HttpSession]):
     for conv in conv_details.values():
         content_length = conv.request.headers.get("content-length")
-        if content_length and content_length > 0 and not conv.request.body:
+        if content_length and int(content_length[0]) > 0 and not conv.request.body:
             logger.warning(
-                f"Missing request body for {conv.request.method} " f"{conv.request.url}"
+                f"{conv!s}: Missing request body"
             )
+        
+        content_length = conv.response.headers.get("content-length")
+        if content_length and int(content_length[0]) > 0 and not conv.response.body:
+            logger.warning(
+                f"{conv!s}: Missing response body"
+            )
+        
 
 
 def read_pcap_file(pcap_file):
