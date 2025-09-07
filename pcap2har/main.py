@@ -53,9 +53,7 @@ class HttpRequest:
             "url": self.url,
             "httpVersion": self.httpVersion,
             "headers": [
-                {"name": h, "value": v}
-                for h, vs in self.headers.items()
-                for v in vs
+                {"name": h, "value": v} for h, vs in self.headers.items() for v in vs
             ],
             "postData": (
                 {
@@ -92,9 +90,7 @@ class HttpResponse:
             "statusText": self.statusText,
             "httpVersion": self.httpVersion,
             "headers": [
-                {"name": h, "value": v}
-                for h, vs in self.headers.items()
-                for v in vs
+                {"name": h, "value": v} for h, vs in self.headers.items() for v in vs
             ],
             "headersSize": self.headersSize,
             "bodySize": len(self.body) - self.compressionSaved,
@@ -178,20 +174,14 @@ class HttpSession:
             "blocked": 0,
             "dns": 0,
             "connect": 0,
-            "send": (
-                self.request.endTimestamp - self.request.startTimestamp
-            ) * 1000.0,
+            "send": (self.request.endTimestamp - self.request.startTimestamp) * 1000.0,
             "wait": (
-                (
-                    self.response.startTimestamp - self.request.endTimestamp
-                ) * 1000.0
+                (self.response.startTimestamp - self.request.endTimestamp) * 1000.0
                 if self.response.startTimestamp
                 else -1
             ),
             "receive": (
-                (
-                    self.response.endTimestamp - self.response.startTimestamp
-                ) * 1000.0
+                (self.response.endTimestamp - self.response.startTimestamp) * 1000.0
                 if self.response.startTimestamp
                 else -1
             ),
@@ -203,8 +193,7 @@ class HttpSession:
 @click.version_option(__version__)
 @click.argument("pcap_file", type=click.Path(exists=True, path_type=Path))
 @click.option(
-    "--output", "-o", type=click.Path(allow_dash=True),
-    help="Output HAR file path"
+    "--output", "-o", type=click.Path(allow_dash=True), help="Output HAR file path"
 )
 @click.option("--pretty/--no-pretty", help="Pretty print the json")
 @click.option(
@@ -213,9 +202,7 @@ class HttpSession:
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
     help="Set the logging level.",
 )
-def main(
-    pcap_file: Path, output: str = None, pretty=False, log_level="INFO"
-):
+def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
     """Convert PCAP file to HAR format"""
 
     logging.basicConfig(
@@ -248,8 +235,7 @@ def run_consistency_checks(conv_details: Dict[Any, HttpSession]):
         content_length = conv.request.headers.get("content-length")
         if content_length and content_length > 0 and not conv.request.body:
             logger.warning(
-                f"Missing request body for {conv.request.method} "
-                f"{conv.request.url}"
+                f"Missing request body for {conv.request.method} " f"{conv.request.url}"
             )
 
 
@@ -272,18 +258,11 @@ def read_pcap_file(pcap_file):
             stream_id = layer.get_field("frame_streamid")
             if not stream_id:
                 continue
-            full_stream_id = (
-                "3",
-                packet.quic.connection_number,
-                stream_id
-            )
+            full_stream_id = ("3", packet.quic.connection_number, stream_id)
             port = packet.udp.dstport
             http_version = "HTTP/3"
         elif layer.layer_name == "http2":
-            if (
-                layer.get_field("streamid") == "0"
-                or layer.stream == "Stream: Magic"
-            ):
+            if layer.get_field("streamid") == "0" or layer.stream == "Stream: Magic":
                 continue
             full_stream_id = ("2", packet.tcp.stream, layer.streamid)
             port = packet.tcp.dstport
@@ -317,9 +296,7 @@ def read_pcap_file(pcap_file):
                     direction = "send"
 
         if conv_details[full_stream_id].firstPacketNumber == 0:
-            conv_details[full_stream_id].firstPacketNumber = (
-                packet.frame_info.number
-            )
+            conv_details[full_stream_id].firstPacketNumber = packet.frame_info.number
 
         timestamp = float(str(packet.frame_info.time_epoch))
         my_conv_details = (
@@ -332,9 +309,7 @@ def read_pcap_file(pcap_file):
         if packet not in conv_details[full_stream_id].packets:
             conv_details[full_stream_id].packets.append(packet)
         if direction == "send":
-            conv_details[full_stream_id].remoteAddress = (
-                f"{packet.ip.dst}:{port}"
-            )
+            conv_details[full_stream_id].remoteAddress = f"{packet.ip.dst}:{port}"
 
         if layer.layer_name == "websocket":
             message = WebsocketMessage()
@@ -362,12 +337,8 @@ def read_pcap_file(pcap_file):
             headersLen = 0
             headers = my_conv_details.headers
             for header in header.all_fields:
-                headers[
-                    CaseInsensitiveString(header.showname_key.strip())
-                ].append(
-                    maybe_strip_suffix(
-                        header.showname_value.strip(), "\\r\\n"
-                    )
+                headers[CaseInsensitiveString(header.showname_key.strip())].append(
+                    maybe_strip_suffix(header.showname_value.strip(), "\\r\\n")
                 )
                 headersLen += len(str(header))
             my_conv_details.headersSize += headersLen
@@ -385,12 +356,8 @@ def read_pcap_file(pcap_file):
             headersLen = 0
             headers = my_conv_details.headers
             for header in header.all_fields:
-                headers[
-                    CaseInsensitiveString(header.showname_key.strip())
-                ].append(
-                    maybe_strip_suffix(
-                        header.showname_value.strip(), "\\r\\n"
-                    )
+                headers[CaseInsensitiveString(header.showname_key.strip())].append(
+                    maybe_strip_suffix(header.showname_value.strip(), "\\r\\n")
                 )
                 headersLen += len(str(header))
             my_conv_details.headersSize += headersLen
@@ -398,9 +365,7 @@ def read_pcap_file(pcap_file):
             my_conv_details.status = int(str(layer.response_code))
             my_conv_details.statusText = layer.response_code_desc
 
-        if header := (
-            layer.get_field("header") or layer.get_field("headers_header")
-        ):
+        if header := (layer.get_field("header") or layer.get_field("headers_header")):
             has_something = True
 
             if my_conv_details.startTimestamp is None:
@@ -411,9 +376,7 @@ def read_pcap_file(pcap_file):
             headers = my_conv_details.headers
             for header in header.all_fields:
                 name, value = header.showname_value.split(": ", 1)
-                headers[CaseInsensitiveString(name.strip())].append(
-                    value.strip()
-                )
+                headers[CaseInsensitiveString(name.strip())].append(value.strip())
 
             my_conv_details.headersSize += int(
                 layer.get_field("header_length")
@@ -470,13 +433,10 @@ def read_pcap_file(pcap_file):
                     conv.response.body = gzip.decompress(conv.response.body)
                 case _:
                     print(f"Unknown encoding {encoding}")
-            conv.response.compressionSaved = (
-                len(conv.response.body) - size_before
-            )
+            conv.response.compressionSaved = len(conv.response.body) - size_before
         except Exception:
             logger.exception(
-                f"{conv!s}: Failed to parse response body with "
-                f"content-encoding."
+                f"{conv!s}: Failed to parse response body with " f"content-encoding."
             )
     return conv_details
 

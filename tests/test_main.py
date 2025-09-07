@@ -1,4 +1,5 @@
 """Tests for main module."""
+
 from click.testing import CliRunner
 from pcap2har.main import main
 

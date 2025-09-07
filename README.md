@@ -141,9 +141,6 @@ uv run flake8 pcap2har/ tests/
 
 # Run tests
 uv run python -m pytest tests/ -v
-
-# Type checking (if using mypy)
-uv run mypy pcap2har/ tests/
 ```
 
 ### Useful tshark Commands
