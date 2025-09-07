@@ -10,7 +10,13 @@ on:
       python-versions:
         required: false
         type: string
-        default: '["3.10", "3.11", "3.12", "3.13"]'
+        default: ''
+  workflow_call:
+    inputs:
+      python-versions:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   test:
