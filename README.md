@@ -70,7 +70,7 @@ uv run python -m pcap2har.main <pcap_file> --pretty
 2. Install dependencies: `uv sync`
 3. Run tests: `uv run python -m pytest tests/`
 4. Format code: `uv run black .`
-5. Lint code: `uv run flake8 .`
+5. Lint code: `uv run flake8 pcap2har/ tests/`
 
 ## CI/CD
 

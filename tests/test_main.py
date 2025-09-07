@@ -1,7 +1,4 @@
 """Tests for main module."""
-
-import pytest
-from pathlib import Path
 from click.testing import CliRunner
 from pcap2har.main import main
 

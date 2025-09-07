@@ -1,8 +1,7 @@
 """Tests for HTTP stream parsing."""
 
-import pytest
 from pathlib import Path
-from pcap2har.main import *
+from pcap2har.main import to_har_json, read_pcap_file
 
 
 def parse_pcap_to_har(file):
