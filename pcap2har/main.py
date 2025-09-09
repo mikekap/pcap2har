@@ -5,6 +5,7 @@ from functools import total_ordering
 import gzip
 import json
 import logging
+import sys
 from typing import Any, Dict, Optional
 
 from pyshark.capture.capture import Packet
@@ -218,13 +219,17 @@ class HttpSession:
     "--output", "-o", type=click.Path(allow_dash=True), help="Output HAR file path"
 )
 @click.option("--pretty/--no-pretty", help="Pretty print the json")
+@click.option("--check",
+              default='warning',
+              type=click.Choice(["off", "warning", "error"]),
+              help="Run consistency checks on the resulting data")
 @click.option(
     "--log-level",
     default="INFO",
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
     help="Set the logging level.",
 )
-def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
+def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO", check="warning"):
     """Convert PCAP file to HAR format"""
 
     logging.basicConfig(
@@ -232,7 +237,6 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
-    # Check tshark version and warn if <= 4.4.9
     check_tshark_version()
 
     logger.info(f"Processing PCAP file: {pcap_file}")
@@ -243,7 +247,9 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
     else:
         output_path = pcap_file.with_suffix(".har")
 
-    run_consistency_checks(conv_details)
+    if check != "off":
+        if not run_consistency_checks(conv_details, fatal=check == "error"):
+            sys.exit(-1)
 
     js = to_har_json(conv_details, comment=f"From {pcap_file}")
 
@@ -255,15 +261,33 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
             json.dump(js, fp)
 
 
-def run_consistency_checks(conv_details: Dict[Any, HttpSession]):
+def run_consistency_checks(conv_details: Dict[Any, HttpSession], fatal=False):
+    is_ok = [True]
+
+    def log_fn(*args, **kwargs):
+        if fatal:
+            logger.error(*args, **kwargs)
+            is_ok[0] = False
+        else:
+            logger.warning(*args, **kwargs)
+
     for conv in conv_details.values():
         content_length = conv.request.headers.get("content-length")
         if content_length and int(content_length[0]) > 0 and not conv.request.body:
-            logger.warning(f"{conv!s}: Missing request body")
+            log_fn(f"{conv!s}: Missing request body")
 
         content_length = conv.response.headers.get("content-length")
         if content_length and int(content_length[0]) > 0 and not conv.response.body:
-            logger.warning(f"{conv!s}: Missing response body")
+            log_fn(f"{conv!s}: Missing response body")
+
+        content_type = conv.response.headers.get('content-type')
+        if content_type and first(content_type) and content_type[0].startswith('application/json'):
+            try:
+                json.load(conv.response.body)
+            except Exception:
+                log_fn(f"{conv!s}: Should be JSON but couldn't parse as JSON: {conv.response.body!r}", exc_info=True)
+
+    return is_ok[0]
 
 
 def read_pcap_file(pcap_file):
@@ -435,7 +459,7 @@ def read_pcap_file(pcap_file):
         if data:
             has_something = True
             for d in data.all_fields:
-                if d.showname_value == "<MISSING>" and layer.length == "0":
+                if d.showname_value == "<MISSING>":
                     continue
                 my_conv_details.body += d.binary_value
 
@@ -491,7 +515,7 @@ def to_har_json(conv_details, comment=None):
 def content_to_json(content_type, body):
     if not body:
         return {"mimeType": "", "text": ""}
-    if content_type.split(";", 1)[0].strip() in (
+    if content_type and content_type.split(";", 1)[0].strip() in (
         "application/x-www-form-urlencoded",
         "application/json",
         "text/html",

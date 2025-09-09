@@ -1,11 +1,7 @@
 """Tests for websocket parsing."""
 
 from pathlib import Path
-from pcap2har.main import to_har_json, read_pcap_file
-
-
-def parse_pcap_to_har(file):
-    return to_har_json(read_pcap_file(file))
+from .common import parse_pcap_to_har
 
 
 def test_websocket_parse(golden):
