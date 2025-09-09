@@ -8,6 +8,12 @@ import logging
 from typing import Any, Dict, Optional
 
 from pyshark.capture.capture import Packet
+from pyshark.tshark.tshark import (
+    get_tshark_version,
+    TSharkNotFoundException,
+    TSharkVersionException,
+)
+from packaging import version
 import click
 import base64
 from pathlib import Path
@@ -19,6 +25,23 @@ import tqdm
 
 
 logger = logging.getLogger(__name__)
+
+
+def check_tshark_version():
+    """Check tshark version and log warning if <= 4.4.10."""
+    try:
+        tshark_version = get_tshark_version()
+        # pyshark returns a packaging.version.Version object
+        if tshark_version < version.parse('4.4.10'):
+            logger.warning(
+                f"®tshark version {tshark_version}<4.4.10. "
+                f"The latest is required for proper HTTP/3 support. "
+                f"Consider updating."
+            )
+        else:
+            logger.debug(f"tshark version {tshark_version} is up to date.")
+    except (TSharkNotFoundException, TSharkVersionException) as e:
+        logger.error(f"Error checking tshark version: {e}")
 
 
 @total_ordering
@@ -209,6 +232,9 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
+    # Check tshark version and warn if <= 4.4.9
+    check_tshark_version()
+
     logger.info(f"Processing PCAP file: {pcap_file}")
 
     conv_details = read_pcap_file(pcap_file)
@@ -221,7 +247,7 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO"):
 
     js = to_har_json(conv_details, comment=f"From {pcap_file}")
 
-    logger.info(f"Output will be written to: {output_path}")
+    logger.info(f"Writing {len(conv_details)} conversations to {output_path}")
     with click.open_file(output_path, "w") as fp:
         if pretty:
             json.dump(js, fp, sort_keys=True, indent=2)

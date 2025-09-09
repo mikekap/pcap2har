@@ -31,6 +31,20 @@ Then install dependencies:
 uv sync
 ```
 
+### Wireshark Dependency
+
+**Important**: This project currently requires Wireshark nightly builds due to the `http3.frame_streamid` field not being available in stable releases. The CI/CD pipeline automatically installs the nightly version, but for local development you may need to install it manually:
+
+```bash
+# On Ubuntu/Debian
+sudo add-apt-repository -y ppa:wireshark-dev/nightly
+sudo apt-get update
+sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y tshark
+
+# On macOS
+brew install --HEAD wireshark
+```
+
 ## Usage
 
 After installation, you can use the `pcap2har` command directly:
