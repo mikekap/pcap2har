@@ -1,6 +1,6 @@
 # pcap2har
 
-[![Tests](https://github.com/mikekap/pcap2har/workflows/Tests/badge.svg)](https://github.com/mikekap/pcap2har/actions/workflows/test.yml)
+[![Tests](https://github.com/mikekap/pcap2har/workflows/CI/badge.svg)](https://github.com/mikekap/pcap2har/actions/workflows/test.yml)
 
 A Python project for converting PCAP files to HAR (HTTP Archive) format.
 
