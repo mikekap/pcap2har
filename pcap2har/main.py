@@ -165,7 +165,8 @@ class HttpSession:
     def __str__(self):
         s = f"HTTP(frame.number=={self.firstPacketNumber}"
         if self.request.httpVersion:
-            s += f", v={self.request.httpVersion}, req={self.request.method} {self.request.url}"
+            s += f", v={self.request.httpVersion}, req={self.request.method}"
+            s += f" {self.request.url}"
         s += ")"
         return s
 
@@ -291,7 +292,8 @@ def run_consistency_checks(conv_details: Dict[Any, HttpSession], fatal=False):
                 json.loads(maybe_strip_prefix(conv.response.body, b")]}'"))
             except Exception:
                 log_fn(
-                    f"{conv!s}: Should be JSON ({content_type[0]}) but couldn't parse as JSON: {conv.response.body!r}",
+                    f"{conv!s}: Should be JSON ({content_type[0]}) but couldn't "
+                    f"parse as JSON: {conv.response.body!r}",
                     exc_info=True,
                 )
 
