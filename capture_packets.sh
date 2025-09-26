@@ -15,8 +15,9 @@ cleanup() {
 trap cleanup EXIT
 
 # Start tcpdump as root; grab the *tcpdump* child PID
+sudo echo hi
 sudo tcpdump -U -s 0 -i any -w "$PCAP" -Z "$USER" \
-  '(tcp port 80 or tcp port 443 or udp port 443)' &
+  '(tcp port 80 or tcp port 443 or udp port 443 or tcp port 8443 or udp port 8443)' &
 sleep 1
 SUDO_PID=$!
 # Find the actual tcpdump PID (child of sudo)

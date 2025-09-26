@@ -164,11 +164,8 @@ class HttpSession:
 
     def __str__(self):
         s = f"HTTP(frame.number=={self.firstPacketNumber}"
-        if self.request:
-            if self.request.httpVersion:
-                s += ", v=" + self.request.httpVersion
-
-            s += f", req={self.request.method} {self.request.url}"
+        if self.request.httpVersion:
+            s += f", v={self.request.httpVersion}, req={self.request.method} {self.request.url}"
         s += ")"
         return s
 
@@ -251,7 +248,7 @@ def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO", ch
         if not run_consistency_checks(conv_details, fatal=check == "error"):
             sys.exit(-1)
 
-    js = to_har_json(conv_details, comment=f"From {pcap_file}")
+    js = to_har_json(conv_details, comment=f"From {pcap_file}", fatal=check == "error")
 
     logger.info(f"Writing {len(conv_details)} conversations to {output_path}")
     with click.open_file(output_path, "w") as fp:
@@ -283,9 +280,9 @@ def run_consistency_checks(conv_details: Dict[Any, HttpSession], fatal=False):
         content_type = conv.response.headers.get('content-type')
         if content_type and first(content_type) and content_type[0].startswith('application/json'):
             try:
-                json.load(conv.response.body)
+                json.loads(maybe_strip_prefix(conv.response.body, b")]}'"))
             except Exception:
-                log_fn(f"{conv!s}: Should be JSON but couldn't parse as JSON: {conv.response.body!r}", exc_info=True)
+                log_fn(f"{conv!s}: Should be JSON ({content_type[0]}) but couldn't parse as JSON: {conv.response.body!r}", exc_info=True)
 
     return is_ok[0]
 
@@ -346,9 +343,6 @@ def read_pcap_file(pcap_file):
                 else:
                     direction = "send"
 
-        if conv_details[full_stream_id].firstPacketNumber == 0:
-            conv_details[full_stream_id].firstPacketNumber = packet.frame_info.number
-
         timestamp = float(str(packet.frame_info.time_epoch))
         my_conv_details = (
             conv_details[full_stream_id].request
@@ -357,12 +351,8 @@ def read_pcap_file(pcap_file):
         )
         has_something = False
 
-        if packet not in conv_details[full_stream_id].packets:
-            conv_details[full_stream_id].packets.append(packet)
-        if direction == "send":
-            conv_details[full_stream_id].remoteAddress = f"{packet.ip.dst}:{port}"
-
         if layer.layer_name == "websocket":
+            has_something = True
             message = WebsocketMessage()
             message.type = {"send": "send", "recv": "receive"}[direction]
             message.time = timestamp
@@ -373,9 +363,6 @@ def read_pcap_file(pcap_file):
                 message.data += payload.binary_value
 
             conv_details[full_stream_id].websocketMessages.append(message)
-
-            conv_details[full_stream_id].maxPacketTs = timestamp
-            continue
 
         if header := layer.get_field("request_line"):
             has_something = True
@@ -466,7 +453,14 @@ def read_pcap_file(pcap_file):
         if not has_something:
             continue
 
-        my_conv_details.endTimestamp = timestamp
+        if conv_details[full_stream_id].firstPacketNumber == 0:
+            conv_details[full_stream_id].firstPacketNumber = packet.frame_info.number
+
+        if direction == "send":
+            conv_details[full_stream_id].remoteAddress = f"{packet.ip.dst}:{port}"
+
+        if layer.layer_name != 'websocket':
+            my_conv_details.endTimestamp = timestamp
         conv_details[full_stream_id].maxPacketTs = timestamp
 
     for conv_id, conv in conv_details.items():
@@ -487,12 +481,23 @@ def read_pcap_file(pcap_file):
             conv.response.compressionSaved = len(conv.response.body) - size_before
         except Exception:
             logger.exception(
-                f"{conv!s}: Failed to parse response body with " f"content-encoding."
+                f"{conv!s}: Failed to parse response body with {encoding}."
             )
+
     return conv_details
 
 
-def to_har_json(conv_details, comment=None):
+def to_har_json(conv_details, comment=None, fatal=False):
+    har_entries = []
+    for cid, conv in conv_details.items():
+        if conv.request.method != "CONNECT" and conv.maxPacketTs > 0:
+            try:
+                har_entries.append(conv.to_har_entry(cid))
+            except Exception:
+                logger.exception(f"Failed to convert {conv!r} to HAR")
+                if fatal:
+                    raise
+
     output = {
         "log": {
             "version": "1.2",
@@ -501,11 +506,7 @@ def to_har_json(conv_details, comment=None):
                 "version": __version__,
                 "comment": comment,
             },
-            "entries": [
-                conv.to_har_entry(cid)
-                for cid, conv in conv_details.items()
-                if conv.request.method != "CONNECT" and conv.maxPacketTs > 0
-            ],
+            "entries": har_entries,
         }
     }
 
@@ -549,6 +550,12 @@ def first(it, default=None):
 def maybe_strip_suffix(s, suf):
     if s.endswith(suf):
         return s[: -len(suf)]
+    return s
+
+
+def maybe_strip_prefix(s, suf):
+    if s.startswith(suf):
+        return s[len(suf):]
     return s
 
 
