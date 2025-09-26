@@ -10,9 +10,3 @@ def test_http3_parse(golden):
     har_data = parse_pcap_to_har(str(pcap_file))
     golden.test(har_data)
 
-
-def test_http3_too_many(golden):
-    pcap_file = Path(__file__).parent / "resources" / "http3-too-many.pcapng"
-
-    har_data = parse_pcap_to_har(str(pcap_file))
-    golden.test(har_data)

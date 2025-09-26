@@ -3,7 +3,7 @@
     "creator": {
       "comment": null,
       "name": "pcap2har",
-      "version": "0.1.0"
+      "version": "0.1.1"
     },
     "entries": [
       {
