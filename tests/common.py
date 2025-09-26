@@ -1,4 +1,3 @@
-
 from pcap2har.main import read_pcap_file, run_consistency_checks, to_har_json
 
 

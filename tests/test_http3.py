@@ -9,4 +9,3 @@ def test_http3_parse(golden):
 
     har_data = parse_pcap_to_har(str(pcap_file))
     golden.test(har_data)
-

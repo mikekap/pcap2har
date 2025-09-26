@@ -33,7 +33,7 @@ def check_tshark_version():
     try:
         tshark_version = get_tshark_version()
         # pyshark returns a packaging.version.Version object
-        if tshark_version < version.parse('4.4.10'):
+        if tshark_version < version.parse("4.4.10"):
             logger.warning(
                 f"®tshark version {tshark_version}<4.4.10. "
                 f"The latest is required for proper HTTP/3 support. "
@@ -216,17 +216,21 @@ class HttpSession:
     "--output", "-o", type=click.Path(allow_dash=True), help="Output HAR file path"
 )
 @click.option("--pretty/--no-pretty", help="Pretty print the json")
-@click.option("--check",
-              default='warning',
-              type=click.Choice(["off", "warning", "error"]),
-              help="Run consistency checks on the resulting data")
+@click.option(
+    "--check",
+    default="warning",
+    type=click.Choice(["off", "warning", "error"]),
+    help="Run consistency checks on the resulting data",
+)
 @click.option(
     "--log-level",
     default="INFO",
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
     help="Set the logging level.",
 )
-def main(pcap_file: Path, output: str = None, pretty=False, log_level="INFO", check="warning"):
+def main(
+    pcap_file: Path, output: str = None, pretty=False, log_level="INFO", check="warning"
+):
     """Convert PCAP file to HAR format"""
 
     logging.basicConfig(
@@ -277,12 +281,19 @@ def run_consistency_checks(conv_details: Dict[Any, HttpSession], fatal=False):
         if content_length and int(content_length[0]) > 0 and not conv.response.body:
             log_fn(f"{conv!s}: Missing response body")
 
-        content_type = conv.response.headers.get('content-type')
-        if content_type and first(content_type) and content_type[0].startswith('application/json'):
+        content_type = conv.response.headers.get("content-type")
+        if (
+            content_type
+            and first(content_type)
+            and content_type[0].startswith("application/json")
+        ):
             try:
                 json.loads(maybe_strip_prefix(conv.response.body, b")]}'"))
             except Exception:
-                log_fn(f"{conv!s}: Should be JSON ({content_type[0]}) but couldn't parse as JSON: {conv.response.body!r}", exc_info=True)
+                log_fn(
+                    f"{conv!s}: Should be JSON ({content_type[0]}) but couldn't parse as JSON: {conv.response.body!r}",
+                    exc_info=True,
+                )
 
     return is_ok[0]
 
@@ -459,7 +470,7 @@ def read_pcap_file(pcap_file):
         if direction == "send":
             conv_details[full_stream_id].remoteAddress = f"{packet.ip.dst}:{port}"
 
-        if layer.layer_name != 'websocket':
+        if layer.layer_name != "websocket":
             my_conv_details.endTimestamp = timestamp
         conv_details[full_stream_id].maxPacketTs = timestamp
 
@@ -555,7 +566,7 @@ def maybe_strip_suffix(s, suf):
 
 def maybe_strip_prefix(s, suf):
     if s.startswith(suf):
-        return s[len(suf):]
+        return s[len(suf) :]
     return s
 
 
