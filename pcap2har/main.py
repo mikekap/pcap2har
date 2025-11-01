@@ -27,6 +27,10 @@ import tqdm
 
 logger = logging.getLogger(__name__)
 
+# Maximum response body size to include in HAR (10MB)
+# Chrome's HAR viewer has issues with very large response bodies
+MAX_BODY_SIZE = 10 * 1024 * 1024
+
 
 def check_tshark_version():
     """Check tshark version and log warning if <= 4.4.10."""
@@ -107,7 +111,7 @@ class HttpResponse:
     body: bytes = b""
     compressionSaved: int = 0
 
-    def to_har_response(self):
+    def to_har_response(self, max_body_size=MAX_BODY_SIZE):
         """Convert this HTTP response to HAR format."""
         return {
             "status": self.status,
@@ -124,6 +128,7 @@ class HttpResponse:
                 **content_to_json(
                     first(self.headers.get("content-type", [])),
                     self.body,
+                    max_body_size=max_body_size,
                 ),
             },
         }
@@ -170,14 +175,14 @@ class HttpSession:
         s += ")"
         return s
 
-    def to_har_entry(self, cid):
+    def to_har_entry(self, cid, max_body_size=MAX_BODY_SIZE):
         """Convert this HTTP session to a HAR entry."""
         return {
             "startedDateTime": unix_ts_to8601(self.request.startTimestamp),
             "time": (self.maxPacketTs - self.request.startTimestamp) * 1000.0,
             "serverIPAddress": self.remoteAddress.rsplit(":", 1)[0],
             "request": self.request.to_har_request(),
-            "response": self.response.to_har_response(),
+            "response": self.response.to_har_response(max_body_size=max_body_size),
             "_resourceType": "websocket" if self.websocketMessages else None,
             "_webSocketMessages": (
                 [m.to_har_message() for m in self.websocketMessages]
@@ -229,8 +234,19 @@ class HttpSession:
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
     help="Set the logging level.",
 )
+@click.option(
+    "--max-body-size",
+    default=MAX_BODY_SIZE,
+    type=int,
+    help=f"Maximum response body size to include in HAR (in bytes). Default: {MAX_BODY_SIZE} (10MB)",
+)
 def main(
-    pcap_file: Path, output: str = None, pretty=False, log_level="INFO", check="warning"
+    pcap_file: Path,
+    output: str = None,
+    pretty=False,
+    log_level="INFO",
+    check="warning",
+    max_body_size=MAX_BODY_SIZE,
 ):
     """Convert PCAP file to HAR format"""
 
@@ -253,7 +269,12 @@ def main(
         if not run_consistency_checks(conv_details, fatal=check == "error"):
             sys.exit(-1)
 
-    js = to_har_json(conv_details, comment=f"From {pcap_file}", fatal=check == "error")
+    js = to_har_json(
+        conv_details,
+        comment=f"From {pcap_file}",
+        fatal=check == "error",
+        max_body_size=max_body_size,
+    )
 
     logger.info(f"Writing {len(conv_details)} conversations to {output_path}")
     with click.open_file(output_path, "w") as fp:
@@ -500,12 +521,12 @@ def read_pcap_file(pcap_file):
     return conv_details
 
 
-def to_har_json(conv_details, comment=None, fatal=False):
+def to_har_json(conv_details, comment=None, fatal=False, max_body_size=MAX_BODY_SIZE):
     har_entries = []
     for cid, conv in conv_details.items():
         if conv.request.method != "CONNECT" and conv.maxPacketTs > 0:
             try:
-                har_entries.append(conv.to_har_entry(cid))
+                har_entries.append(conv.to_har_entry(cid, max_body_size=max_body_size))
             except Exception:
                 logger.exception(f"Failed to convert {conv!r} to HAR")
                 if fatal:
@@ -526,9 +547,21 @@ def to_har_json(conv_details, comment=None, fatal=False):
     return output
 
 
-def content_to_json(content_type, body):
+def content_to_json(content_type, body, max_body_size=MAX_BODY_SIZE):
     if not body:
         return {"mimeType": "", "text": ""}
+
+    # Check if body exceeds maximum size limit and truncate if needed
+    original_size = len(body)
+    truncated = False
+    if original_size > max_body_size:
+        logger.warning(
+            f"Response body size ({original_size} bytes) exceeds maximum "
+            f"({max_body_size} bytes). Truncating body in HAR output."
+        )
+        body = body[:max_body_size]
+        truncated = True
+
     if content_type and content_type.split(";", 1)[0].strip() in (
         "application/x-www-form-urlencoded",
         "application/json",
@@ -538,22 +571,40 @@ def content_to_json(content_type, body):
         "application/json+protobuf",
     ):
         try:
-            return {"mimeType": content_type, "text": body.decode("utf-8")}
+            result = {"mimeType": content_type, "text": body.decode("utf-8")}
+            if truncated:
+                result["comment"] = (
+                    f"Body truncated: original size ({original_size} bytes) "
+                    f"exceeds {max_body_size} byte limit"
+                )
+            return result
         except UnicodeDecodeError:
             logger.warning(
                 f"Could not convert {body!r} to {content_type}", exc_info=True
             )
-            return {
+            result = {
                 "mimeType": content_type,
                 "text": base64.b64encode(body).decode("ascii"),
                 "encoding": "base64",
             }
+            if truncated:
+                result["comment"] = (
+                    f"Body truncated: original size ({original_size} bytes) "
+                    f"exceeds {max_body_size} byte limit"
+                )
+            return result
     else:
-        return {
+        result = {
             "mimeType": content_type,
             "text": base64.b64encode(body).decode("ascii"),
             "encoding": "base64",
         }
+        if truncated:
+            result["comment"] = (
+                f"Body truncated: original size ({original_size} bytes) "
+                f"exceeds {max_body_size} byte limit"
+            )
+        return result
 
 
 def first(it, default=None):
