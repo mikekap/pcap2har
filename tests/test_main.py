@@ -21,7 +21,7 @@ class TestMain:
         assert result.exit_code != 0
 
 
-def test_body_truncation(self):
+def test_body_truncation():
     body = b"x" * 200
     max_size = 100
 

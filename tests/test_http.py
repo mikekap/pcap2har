@@ -9,3 +9,9 @@ def test_chunked_gzip(golden):
 
     har_data = parse_pcap_to_har(str(pcap_file))
     golden.test(har_data)
+
+def test_keep_alive(golden):
+    pcap_file = Path(__file__).parent / "resources" / "http-keep-alive.pcap"
+
+    har_data = parse_pcap_to_har(str(pcap_file))
+    golden.test(har_data)
