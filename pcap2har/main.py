@@ -359,11 +359,6 @@ def read_pcap_file(pcap_file):
                 ].request.url:
                     # This is a new request on the same connection, increment sequence
                     http1_sequence_counters[tcp_stream] += 1
-                current_session_id = (
-                    "1",
-                    tcp_stream,
-                    http1_sequence_counters[tcp_stream],
-                )
 
             full_stream_id = ("1", tcp_stream, http1_sequence_counters[tcp_stream])
             port = packet.tcp.dstport
