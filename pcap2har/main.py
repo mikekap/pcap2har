@@ -27,8 +27,6 @@ import tqdm
 
 logger = logging.getLogger(__name__)
 
-# Maximum response body size to include in HAR (10MB)
-# Chrome's HAR viewer has issues with very large response bodies
 MAX_BODY_SIZE = 10 * 1024 * 1024
 
 
@@ -238,7 +236,7 @@ class HttpSession:
     "--max-body-size",
     default=MAX_BODY_SIZE,
     type=int,
-    help=f"Maximum response body size to include in HAR (in bytes). Default: {MAX_BODY_SIZE} (10MB)",
+    help="Maximum response body size to include in HAR (in bytes).",
 )
 def main(
     pcap_file: Path,
@@ -299,9 +297,10 @@ def run_consistency_checks(conv_details: Dict[Any, HttpSession], fatal=False):
         if content_length and int(content_length[0]) > 0 and not conv.request.body:
             log_fn(f"{conv!s}: Missing request body")
 
-        content_length = conv.response.headers.get("content-length")
-        if content_length and int(content_length[0]) > 0 and not conv.response.body:
-            log_fn(f"{conv!s}: Missing response body")
+        if conv.request.method != "HEAD":
+            content_length = conv.response.headers.get("content-length")
+            if content_length and int(content_length[0]) > 0 and not conv.response.body:
+                log_fn(f"{conv!s}: Missing response body")
 
         content_type = conv.response.headers.get("content-type")
         if (
@@ -329,6 +328,8 @@ def read_pcap_file(pcap_file):
     )
 
     conv_details = defaultdict(HttpSession)
+    http1_sequence_counters = defaultdict(int)
+    http1_last_request_direction = {}
 
     def unnest(packet):
         return ((layer, packet) for layer in packet.layers)
@@ -350,11 +351,24 @@ def read_pcap_file(pcap_file):
             port = packet.tcp.dstport
             http_version = "HTTP/2"
         elif layer.layer_name == "http":
-            full_stream_id = ("1", packet.tcp.stream)
+            tcp_stream = packet.tcp.stream
+
+            if layer.get_field("request_line"):
+                current_session_id = (
+                    "1",
+                    tcp_stream,
+                    http1_sequence_counters[tcp_stream],
+                )
+                if conv_details[current_session_id].request.url:
+                    # This is a new request on the same connection, increment sequence
+                    http1_sequence_counters[tcp_stream] += 1
+
+            full_stream_id = ("1", tcp_stream, http1_sequence_counters[tcp_stream])
             port = packet.tcp.dstport
             http_version = "HTTP/1"
         elif layer.layer_name == "websocket":
-            full_stream_id = ("1", packet.tcp.stream)
+            tcp_stream = packet.tcp.stream
+            full_stream_id = ("1", tcp_stream, http1_sequence_counters[tcp_stream])
             port = packet.tcp.dstport
         else:
             continue
@@ -374,6 +388,11 @@ def read_pcap_file(pcap_file):
                         )
                         else "recv"
                     )
+                elif (
+                    layer.layer_name == "http"
+                    and packet.tcp.stream in http1_last_request_direction
+                ):
+                    direction = http1_last_request_direction[packet.tcp.stream]
                 else:
                     direction = "send"
 
@@ -420,6 +439,9 @@ def read_pcap_file(pcap_file):
                     my_conv_details.url = full_uri
             if method := layer.get_field("request_method"):
                 my_conv_details.method = method
+
+            if layer.layer_name == "http":
+                http1_last_request_direction[packet.tcp.stream] = direction
 
         if header := layer.get_field("response_line"):
             has_something = True
@@ -551,7 +573,6 @@ def content_to_json(content_type, body, max_body_size=MAX_BODY_SIZE):
     if not body:
         return {"mimeType": "", "text": ""}
 
-    # Check if body exceeds maximum size limit and truncate if needed
     original_size = len(body)
     truncated = False
     if original_size > max_body_size:

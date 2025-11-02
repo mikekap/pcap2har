@@ -1,7 +1,7 @@
 """Tests for main module."""
 
 from click.testing import CliRunner
-from pcap2har.main import main, content_to_json, MAX_BODY_SIZE
+from pcap2har.main import main, content_to_json
 
 
 class TestMain:
