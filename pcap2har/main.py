@@ -354,14 +354,16 @@ def read_pcap_file(pcap_file):
             tcp_stream = packet.tcp.stream
 
             if layer.get_field("request_line"):
+                if conv_details[
+                    (1, tcp_stream, http1_sequence_counters[tcp_stream])
+                ].request.url:
+                    # This is a new request on the same connection, increment sequence
+                    http1_sequence_counters[tcp_stream] += 1
                 current_session_id = (
                     "1",
                     tcp_stream,
                     http1_sequence_counters[tcp_stream],
                 )
-                if conv_details[current_session_id].request.url:
-                    # This is a new request on the same connection, increment sequence
-                    http1_sequence_counters[tcp_stream] += 1
 
             full_stream_id = ("1", tcp_stream, http1_sequence_counters[tcp_stream])
             port = packet.tcp.dstport
