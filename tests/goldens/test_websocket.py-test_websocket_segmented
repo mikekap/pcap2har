@@ -23,7 +23,7 @@
           }
         ],
         "cache": {},
-        "connection": "1-1",
+        "connection": "1-1-0",
         "request": {
           "bodySize": 0,
           "headers": [

@@ -41,7 +41,7 @@
           }
         ],
         "cache": {},
-        "connection": "1-0",
+        "connection": "1-0-0",
         "request": {
           "bodySize": 0,
           "headers": [
