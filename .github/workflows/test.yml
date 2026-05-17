@@ -38,12 +38,10 @@ jobs:
       with:
         version: latest
     
-    - name: Install Wireshark (tshark) - Nightly
+    - name: Install Wireshark (tshark)
       run: |
-        # Add Wireshark development PPA for latest builds
-        sudo add-apt-repository -y ppa:wireshark-dev/nightly
+        sudo add-apt-repository -y ppa:wireshark-dev/stable
         sudo apt-get update
-        # Install the latest development version
         sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y tshark
     
     - name: Install dependencies
