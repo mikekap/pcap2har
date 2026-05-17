@@ -425,7 +425,7 @@ def read_pcap_file(pcap_file):
             headersLen = 0
             headers = my_conv_details.headers
             for header in header.all_fields:
-                if header.showname_key is None or not header.showname_value is None:
+                if header.showname_key is None or header.showname_value is None:
                     continue
                 headers[CaseInsensitiveString(header.showname_key.strip())].append(
                     maybe_strip_suffix(header.showname_value.strip(), "\\r\\n")
@@ -449,7 +449,7 @@ def read_pcap_file(pcap_file):
             headersLen = 0
             headers = my_conv_details.headers
             for header in header.all_fields:
-                if header.showname_key is None or not header.showname_value is None:
+                if header.showname_key is None or header.showname_value is None:
                     continue
                 headers[CaseInsensitiveString(header.showname_key.strip())].append(
                     maybe_strip_suffix(header.showname_value.strip(), "\\r\\n")
